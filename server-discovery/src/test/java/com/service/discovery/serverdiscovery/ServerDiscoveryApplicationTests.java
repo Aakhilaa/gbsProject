@@ -1,10 +1,10 @@
-package com.gbs.paymentservice;
+package com.service.discovery.serverdiscovery;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PaymentServiceApplicationTests {
+class ServerDiscoveryApplicationTests {
 
 	@Test
 	void contextLoads() {

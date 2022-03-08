@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,18 +37,17 @@ public class ProductController {
     public HashMap<Object, Object> getByProd(@RequestParam String productCategory) {
         var response = new HashMap<Object, Object>();
 
-      
-            if (productCategory != null) {
-                List<Product> product = new ArrayList<>();
-                product = productService.getBycatg(productCategory);
+        if (productCategory != null) {
+            List<Product> product = new ArrayList<>();
+            product = productService.getBycatg(productCategory);
 
-                if (product.size() >= 1 && product != null) {
-                    response.put("Search Results:", product );
-                } else {
-                    response.put("message", "no data found");
-                }
+            if (product.size() >= 1 && product != null) {
+                response.put("Search Results:", product);
+            } else {
+                response.put("message", "no data found");
             }
-       
+        }
+
         return response;
     }
 
@@ -73,22 +73,30 @@ public class ProductController {
         return ResponseEntity.ok(productService.findById(id).orElseThrow());
     }
 
+//PostMappping to Update
     @PostMapping("/findProductsByIdList")
     public ResponseEntity<Map<Object, Object>> createItems(@RequestBody List<Integer> ids) {
         Map<Object, Object> response = new HashMap<>();
-        
-        List<Product> products =  (List<Product>) productRepository.findAllById(ids);
-        if(products.isEmpty()) {
+
+        List<Product> products = (List<Product>) productRepository.findAllById(ids);
+        if (products.isEmpty()) {
             response.put("message", "No items found");
             response.put("status", HttpStatus.NOT_FOUND);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         response.put("status", HttpStatus.OK);
         response.put("products", products);
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-   
+    // Post mapping to creating an Product in the database
+
+    @PostMapping("/createProduct")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Product> create(@RequestBody Product product) {
+        return ResponseEntity.ok(productService.create(product));
+        
+    }
 
 }
